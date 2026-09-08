@@ -30,131 +30,12 @@ jobs:
             https://github.com/andr36oid/android_kernel_gameconsole_r36s.git kernel
           cd kernel
           git submodule update --init --recursive || true
-          git rev-parse HEAD
+          test "$(git rev-parse HEAD)" = "66f1d314280c082cafb8fe9620f03873973c35af"
 
       - name: Install Clone Type2 Panel1 DTS
-        shell: bash
         run: |
-          cat > kernel/arch/arm64/boot/dts/rockchip/rk3326-r36s-android-clone-type2-panel1.dts <<'DTS'
-          // SPDX-License-Identifier: (GPL-2.0+ OR MIT)
-          /dts-v1/;
-          #include "rk3326-r36s-android.dtsi"
-
-          / {
-              model = "R36S Clone Type2 Panel1 (AndR36oid experimental)";
-              compatible = "rockchip,rk3326-r36s-linux", "rockchip,rk3326-odroidgo3-linux", "rockchip,rk3326";
-          };
-
-          &backlight {
-              pwms = <&pwm1 0 25000 0>;
-              default-brightness-level = <200>;
-          };
-
-          &vccio_sd {
-              regulator-min-microvolt = <1800000>;
-              regulator-max-microvolt = <3300000>;
-              regulator-always-on;
-              regulator-boot-on;
-          };
-
-          &vcc_sd {
-              regulator-min-microvolt = <3300000>;
-              regulator-max-microvolt = <3300000>;
-              regulator-boot-on;
-          };
-
-          &vcc_lcd {
-              regulator-min-microvolt = <3300000>;
-              regulator-max-microvolt = <3300000>;
-              regulator-always-on;
-              regulator-boot-on;
-          };
-
-          &timing0 {
-              clock-frequency = <30000000>;
-              hactive = <640>;
-              vactive = <480>;
-              hfront-porch = <150>;
-              hsync-len = <50>;
-              hback-porch = <150>;
-              vfront-porch = <20>;
-              vsync-len = <6>;
-              vback-porch = <12>;
-              hsync-active = <0>;
-              vsync-active = <0>;
-              de-active = <0>;
-              pixelclk-active = <0>;
-          };
-
-          &timing1 {
-              clock-frequency = <30000000>;
-              hactive = <640>;
-              vactive = <480>;
-              hfront-porch = <150>;
-              hsync-len = <40>;
-              hback-porch = <135>;
-              vfront-porch = <20>;
-              vsync-len = <6>;
-              vback-porch = <12>;
-              hsync-active = <0>;
-              vsync-active = <0>;
-              de-active = <0>;
-              pixelclk-active = <0>;
-          };
-
-          &dsi {
-              panel@0 {
-                  compatible = "simple-panel-dsi";
-                  reset-gpios = <&gpio3 RK_PD3 GPIO_ACTIVE_LOW>;
-                  enable-gpios = <&gpio3 RK_PA3 GPIO_ACTIVE_HIGH>;
-                  prepare-delay-ms = <20>;
-                  reset-delay-ms = <20>;
-                  init-delay-ms = <20>;
-                  enable-delay-ms = <120>;
-                  disable-delay-ms = <20>;
-                  unprepare-delay-ms = <20>;
-                  width-mm = <153>;
-                  height-mm = <85>;
-                  dsi,flags = <(MIPI_DSI_MODE_VIDEO |
-                                MIPI_DSI_MODE_VIDEO_BURST |
-                                MIPI_DSI_MODE_LPM |
-                                MIPI_DSI_MODE_EOT_PACKET)>;
-                  dsi,format = <MIPI_DSI_FMT_RGB888>;
-                  dsi,lanes = <4>;
-                  panel-init-sequence = [
-                      39 00 04 b9 f1 12 83 39 00 06 b1 00 00 00 da 80
-                      39 00 04 b2 00 13 70 39 00 0b b3 10 10 28 28 03
-                      ff 00 00 00 00 15 00 02 b4 80 15 00 03 b5 0a 0a
-                      15 00 03 b6 82 82 39 00 05 b8 26 62 f0 63 39 00
-                      1c ba 33 81 05 f9 0e 0e 20 00 00 00 00 00 00 00
-                      44 25 00 90 0a 00 00 01 4f 01 00 00 37 15 00 02
-                      bc 47 39 00 04 bf 02 11 00 39 00 0a c0 73 73 50
-                      50 00 00 12 50 00 39 00 0d c1 53 00 32 32 77 d1
-                      cc cc 77 77 33 33 39 00 07 c6 82 00 bf ff 00 ff
-                      39 00 07 c7 b8 00 0a 00 00 00 39 00 05 c8 10 40
-                      1e 02 15 00 02 cc 0b 39 00 23 e0 00 07 0d 37 35
-                      3f 41 44 06 0c 0d 0f 11 10 12 14 1a 00 07 0d 37
-                      35 3f 41 44 06 0c 0d 0f 11 10 12 14 1a 39 00 0f
-                      e3 07 07 0b 0b 0b 0b 00 00 00 00 ff 00 c0 10 39
-                      00 40 e9 c8 10 02 00 00 b0 b1 11 31 23 28 80 b0
-                      b1 27 08 00 04 02 00 00 00 00 04 02 00 00 00 88
-                      88 ba 60 24 08 88 88 88 88 88 88 88 ba 71 35 18
-                      88 88 88 88 88 00 00 00 01 00 00 00 00 00 00 00
-                      00 00 39 00 3e ea 97 0a 82 02 03 07 00 00 00 00
-                      00 00 81 88 ba 17 53 88 88 88 88 88 88 80 88 ba
-                      06 42 88 88 88 88 88 88 23 00 00 02 80 00 00 00
-                      00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-                      00 00 00 39 00 04 ef ff ff 01 05 c8 01 11 05 14
-                      01 29
-                  ];
-                  panel-exit-sequence = [
-                      05 00 01 28
-                      05 00 01 10
-                  ];
-              };
-          };
-          DTS
-
+          cp rk3326-r36s-android-clone-type2-panel1.dts \
+            kernel/arch/arm64/boot/dts/rockchip/
           if ! grep -q 'rk3326-r36s-android-clone-type2-panel1.dtb' kernel/arch/arm64/boot/dts/rockchip/Makefile; then
             sed -i '/rk3326-r36s-android-panel6.dtb/a dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3326-r36s-android-clone-type2-panel1.dtb' \
               kernel/arch/arm64/boot/dts/rockchip/Makefile
@@ -167,7 +48,7 @@ jobs:
       - name: Build custom DTB
         run: |
           make -C kernel ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- -j2 \
-            rk3326-r36s-android-clone-type2-panel1.dtb
+            rockchip/rk3326-r36s-android-clone-type2-panel1.dtb
           test -s kernel/arch/arm64/boot/dts/rockchip/rk3326-r36s-android-clone-type2-panel1.dtb
 
       - name: Build Android kernel Image
@@ -179,19 +60,29 @@ jobs:
         if: always()
         run: |
           mkdir -p out
-          cp kernel/arch/arm64/boot/dts/rockchip/rk3326-r36s-android-clone-type2-panel1.dtb \
-            out/rk3326-r36s-android.dtb
-          if [ -f kernel/arch/arm64/boot/Image ]; then
+          if [ -s kernel/arch/arm64/boot/dts/rockchip/rk3326-r36s-android-clone-type2-panel1.dtb ]; then
+            cp kernel/arch/arm64/boot/dts/rockchip/rk3326-r36s-android-clone-type2-panel1.dtb \
+              out/rk3326-r36s-android.dtb
+          fi
+          if [ -s kernel/arch/arm64/boot/Image ]; then
             cp kernel/arch/arm64/boot/Image out/Image-clone-type2
           fi
-          sha256sum out/* | tee out/SHA256SUMS.txt
           cat > out/README-TEST.txt <<'EOF'
-          R36S Clone Type 2 / Panel1 experimental AndR36oid build.
-          First test only rk3326-r36s-android.dtb on the TEST Android microSD.
-          Keep the original AndR36oid DTB as a backup.
-          Do not modify the original ArkOS card.
-          Image-clone-type2 is included only if the kernel build completed successfully.
+          R36S Clone Type 2 / Panel1 experimental AndR36oid source build.
+
+          Test card only. Do NOT alter the original ArkOS microSD.
+
+          First test:
+          1. Back up the existing rk3326-r36s-android.dtb from the Android BOOT partition.
+          2. Replace it with the supplied rk3326-r36s-android.dtb.
+          3. Leave the kernel Image unchanged for the first test.
+
+          Image-clone-type2 is supplied only when a full kernel Image build also completed.
+          Do not replace Image until specifically instructed after the DTB-only test.
           EOF
+          (cd out && sha256sum rk3326-r36s-android.dtb Image-clone-type2 2>/dev/null || true) > out/SHA256SUMS.txt
+          ls -lh out
+          test -s out/rk3326-r36s-android.dtb
 
       - name: Upload flash package
         if: always()
