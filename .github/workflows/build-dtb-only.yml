@@ -24,12 +24,15 @@ jobs:
         run: |
           git clone --depth 1 --branch lineage-18.1 https://github.com/andr36oid/android_kernel_gameconsole_r36s.git kernel
           cd kernel
+          git submodule update --init --recursive
           test "$(git rev-parse HEAD)" = "66f1d314280c082cafb8fe9620f03873973c35af"
 
       - name: Add clone DTS
         run: |
           cp rk3326-r36s-android-clone-type2-panel1.dts kernel/arch/arm64/boot/dts/rockchip/
-          sed -i '/rk3326-r36s-android-panel6.dtb/a dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3326-r36s-android-clone-type2-panel1.dtb' kernel/arch/arm64/boot/dts/rockchip/Makefile
+          if ! grep -q 'rk3326-r36s-android-clone-type2-panel1.dtb' kernel/arch/arm64/boot/dts/rockchip/Makefile; then
+            sed -i '/rk3326-r36s-android-panel6.dtb/a dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3326-r36s-android-clone-type2-panel1.dtb' kernel/arch/arm64/boot/dts/rockchip/Makefile
+          fi
 
       - name: Configure and build DTB
         run: |
